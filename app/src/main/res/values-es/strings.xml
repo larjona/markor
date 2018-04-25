@@ -53,7 +53,7 @@
     <string name="create">Crear</string>
     <string name="select_elements">Seleccionar entradas</string>
     <string name="one_item_selected">Un elemento seleccionado</string>
-    <string name="more_items_selected" tools:ignore="PluralsCandidate">%d items selected</string>
+    <string name="more_items_selected" tools:ignore="PluralsCandidate">%d elementos seleccionados</string>
 
     <string name="pref_summary__is_statusbar_hidden">Ocultar la barra de estado en esta vista</string>
     <string name="pref_title__is_statusbar_hidden">Ocultar la barra de estado</string>
@@ -64,7 +64,7 @@
     <string name="insert_image">Insertar imagen</string>
 
     <!-- About screen -->
-    <string name="contributors">Contribuidores</string>
+    <string name="contributors">Colaboradores</string>
     <string name="select_storage_folder">Seleccionar carpeta de almacenamiento</string>
     <string name="notebook_directory">Carpeta de bloc de notas</string>
     <string name="licenses">Licencias</string>
@@ -81,7 +81,7 @@
     <string name="sort_by_name">Ordenar por nombre</string>
     <string name="sort_by_size">Ordenar por tamaño</string>
     <string name="sort_reverse">Invertir orden</string>
-    <string name="contribute">Contribuir</string>
+    <string name="contribute">Colaborar</string>
     <string name="donate">Donar</string>
     <string name="project_page">Página del proyecto</string>
     <string name="press_again_to_exit">Pulsa de nuevo atrás para salir</string>
