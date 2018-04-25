@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014 Jeff Martin
  * Copyright (c) 2015 Pedro Lafuente
- * Copyright (c) 2017 Gregor Santner and Markor contributors
+ * Copyright (c) 2017-2018 Gregor Santner
  *
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
@@ -17,7 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import net.gsantner.markor.R;
-import net.gsantner.markor.dialog.FilesystemDialogCreator;
+import net.gsantner.markor.ui.FilesystemDialogCreator;
 import net.gsantner.markor.util.AppSettings;
 import net.gsantner.markor.util.PermissionChecker;
 import net.gsantner.opoc.ui.FilesystemDialogData;
@@ -39,7 +39,8 @@ public class WidgetConfigure extends AppCompatActivity {
     }
 
     private void showSelectionDialog() {
-        if (PermissionChecker.doIfPermissionGranted(this) && PermissionChecker.mkSaveDir(this)) {
+        PermissionChecker permc = new PermissionChecker(this);
+        if (permc.mkdirIfStoragePermissionGranted()) {
             FragmentManager fragManager = getSupportFragmentManager();
             FilesystemDialogCreator.showFolderDialog(new FilesystemDialogData.SelectionListenerAdapter() {
                 @Override
@@ -55,7 +56,7 @@ public class WidgetConfigure extends AppCompatActivity {
                 @Override
                 public void onFsDialogConfig(FilesystemDialogData.Options opt) {
                     opt.titleText = R.string.select_folder;
-                    opt.rootFolder = new File(AppSettings.get().getSaveDirectory());
+                    opt.rootFolder = AppSettings.get().getNotebookDirectory();
                 }
             }, fragManager, this);
         }
@@ -64,7 +65,7 @@ public class WidgetConfigure extends AppCompatActivity {
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (PermissionChecker.checkPermissionResult(this, requestCode, permissions, grantResults)) {
+        if (new PermissionChecker(this).checkPermissionResult(requestCode, permissions, grantResults)) {
             showSelectionDialog();
         } else {
             finish();

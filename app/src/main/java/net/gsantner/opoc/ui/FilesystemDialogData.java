@@ -1,14 +1,13 @@
-/*
- * ------------------------------------------------------------------------------
- * Gregor Santner <gsantner.net> wrote this. You can do whatever you want
- * with it. If we meet some day, and you think it is worth it, you can buy me a
- * coke in return. Provided as is without any kind of warranty. Do not blame or
- * sue me if something goes wrong. No attribution required.    - Gregor Santner
+/*#######################################################
  *
- * License: Creative Commons Zero (CC0 1.0)
- *  http://creativecommons.org/publicdomain/zero/1.0/
- * ----------------------------------------------------------------------------
- */
+ *   Maintained by Gregor Santner, 2017-
+ *   https://gsantner.net/
+ *
+ *   License: Apache 2.0
+ *  https://github.com/gsantner/opoc/#licensing
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+#########################################################*/
 package net.gsantner.opoc.ui;
 
 import android.os.Environment;
@@ -45,6 +44,8 @@ public class FilesystemDialogData {
                 doSelectFile = false,
                 doSelectMultiple = false;
 
+        public boolean mustStartWithRootFolder = true;
+
         // Visibility of elements
         public boolean
                 titleTextEnable = true,
@@ -73,8 +74,6 @@ public class FilesystemDialogData {
         public int selectedItemImage = android.R.drawable.checkbox_on_background;
         @DrawableRes
         public int fileImage = android.R.drawable.ic_menu_edit;
-        @DrawableRes
-        public int upButtonImage = android.R.drawable.arrow_up_float;
         @ColorRes
         public int backgroundColor = android.R.color.background_light;
         @ColorRes

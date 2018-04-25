@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:title="@string/settings">
+
+    <!-- Main View screen -->
+    <PreferenceScreen
+        android:icon="@drawable/ic_format_align_justify_black_24dp"
+        android:title="@string/main_view">
+        <PreferenceCategory android:title="@string/document_browser">
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:icon="@drawable/ic_folder_white_24dp"
+                android:key="@string/pref_key__load_last_directory_at_startup"
+                android:summary="@string/load_last_directory_at_startup__summary"
+                android:title="@string/load_last_directory_at_startup" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:icon="@drawable/ic_visibility_black_24dp"
+                android:key="@string/pref_key__is_preview_first"
+                android:title="@string/open_preview_when_open_documents" />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory android:title="@string/more">
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:icon="@drawable/ic_visibility_off_black_24dp"
+                android:key="@string/pref_key__is_overview_statusbar_hidden"
+                android:summary="@string/pref_summary__is_statusbar_hidden"
+                android:title="@string/pref_title__is_statusbar_hidden" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:key="@string/pref_key__show_settings_option_in_main_toolbar"
+                android:summary="@string/pref_show_settings_option_in_main_toolbar"
+                android:title="@string/pref_title__show_settings_option_in_main_toolbar" />
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+
+    <!-- Main View screen -->
+    <PreferenceScreen
+        android:icon="@drawable/ic_file_white_24dp"
+        android:title="@string/files_and_folders">
+        <Preference
+            android:icon="@drawable/ic_save_black_24dp"
+            android:key="@string/pref_key__notebook_directory"
+            android:title="@string/notebook" />
+        <Preference
+            android:icon="@drawable/ic_lightning_black_24dp"
+            android:key="@string/pref_key__quicknote_filepath"
+            android:summary="@string/pref_summary__loaded_and_saved_as__plus_name"
+            android:title="@string/quicknote" />
+        <Preference
+            android:icon="@drawable/ic_assignment_turned_in_black_24dp"
+            android:key="@string/pref_key__todo_filepath"
+            android:summary="@string/pref_summary__loaded_and_saved_as__plus_name"
+            android:title="@string/todo" />
+        <Preference
+            android:icon="@drawable/ic_bookmark_black_24dp"
+            android:key="@string/pref_key__linkbox_filepath"
+            android:summary="@string/pref_summary__loaded_and_saved_as__plus_name"
+            android:title="@string/linkbox" />
+    </PreferenceScreen>
+
+    <!-- Editor screen -->
+    <PreferenceScreen
+        android:icon="@drawable/ic_edit_black_24dp"
+        android:title="@string/editor">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_visibility_off_black_24dp"
+            android:key="@string/pref_key__is_editor_statusbar_hidden"
+            android:summary="@string/pref_summary__is_statusbar_hidden"
+            android:title="@string/pref_title__is_statusbar_hidden" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_extension_black_24dp"
+            android:key="@string/pref_key__is_show_textmodules_bar"
+            android:summary="@string/textmodules_bar_summary"
+            android:title="@string/text_modules" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_filter_center_focus_black_24dp"
+            android:key="@string/pref_key__editor_start_editing_in_center"
+            android:summary="@string/center_text_desc"
+            android:title="@string/center_text" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_vertical_align_bottom_black_24dp"
+            android:key="@string/pref_key__editor_start_editing_on_bottom"
+            android:summary="@string/start_on_bottom_summary"
+            android:title="@string/start_on_bottom" />
+        <net.gsantner.opoc.preference.FontPreferenceCompat
+            android:defaultValue="@string/default_font_family"
+            android:icon="@drawable/ic_format_shapes_black_24dp"
+            android:key="@string/pref_key__font_family"
+            android:title="@string/document_editor_font" />
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="18"
+            android:icon="@drawable/ic_format_size_black_24dp"
+            android:key="@string/pref_key__editor_font_size"
+            android:max="36"
+            android:summary="@string/editor_font_size_summary"
+            android:title="@string/pref_title__font_size"
+            app:min="1" />
+
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="100"
+            android:icon="@drawable/ic_format_line_spacing_black_24dp"
+            android:key="@string/pref_key__editor_line_spacing"
+            android:max="300"
+            android:summary="@string/line_spacing_in_percent"
+            android:title="@string/line_spacing"
+            app:min="50" />
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="8"
+            android:icon="@drawable/ic_space_bar_black_24dp"
+            android:key="@string/pref_key__editor_textmodule_bar_item_padding"
+            android:max="32"
+            android:summary="@string/horizontal_spacing_of_actions"
+            android:title="@string/textmodule_bar_spacing"
+            app:min="0" />
+
+        <PreferenceCategory android:title="@string/syntax_highlighting">
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:icon="@drawable/ic_highlight_black_24dp"
+                android:key="@string/pref_key__is_highlighting_activated"
+                android:summary="@string/highlighting_enabled_summary"
+                android:title="@string/syntax_highlighting" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="@string/pref_key__is_highlighting_activated"
+                android:icon="@drawable/ic_format_color_fill_black_24dp"
+                android:key="@string/pref_key__is_highlighting_for_hexcolor_activated"
+                android:summary="@string/pref_summary__is_highlighting_for_hexcolor_activated"
+                android:title="@string/hexcolor_underline" />
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- Preview screen -->
+    <PreferenceScreen
+        android:icon="@drawable/ic_visibility_black_24dp"
+        android:title="@string/preview">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_format_textdirection_r_to_l_black_24dp"
+            android:key="@string/pref_key__is_render_rtl"
+            android:summary="@string/render_for_right_to_left_languages"
+            android:title="@string/right_to_left_rendering__abbreviated" />
+
+    </PreferenceScreen>
+
+    <!-- Markdown screen -->
+    <PreferenceScreen
+        android:icon="@drawable/gs_markdown_black_24dp"
+        android:title="@string/markdown">
+
+        <PreferenceCategory android:title="@string/syntax_highlighting">
+            <android.support.v7.preference.SeekBarPreference
+                android:defaultValue="270"
+                android:icon="@drawable/ic_highlight_black_24dp"
+                android:key="@string/pref_key__markdown__hl_delay"
+                android:max="3000"
+                android:summary="@string/highlighting_delay_summary"
+                android:title="@string/highlighting_delay"
+                app:min="50" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:icon="@drawable/ic_space_bar_black_24dp"
+                android:key="@string/pref_key__markdown__highlight_lineending_two_or_more_space"
+                android:summary="@string/highlight_line_ending_if_two_or_more_spaces"
+                android:title="@string/highlight_line_ending" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:icon="@drawable/ic_code_black_24dp"
+                android:key="@string/pref_key__markdown__monospace_some_parts"
+                android:summary="@string/use_different_fonttype_slow_down"
+                android:title="@string/use_monospace_for_code" />
+        </PreferenceCategory>
+
+    </PreferenceScreen>
+
+    <!-- To-Do Screen -->
+    <PreferenceScreen
+        android:icon="@drawable/ic_assignment_turned_in_black_24dp"
+        android:title="@string/todo">
+        <PreferenceCategory android:title="@string/text_modules">
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:icon="@drawable/ic_date_range_black_24dp"
+                android:key="@string/pref_key__todotxt__start_new_tasks_with_todays_date"
+                android:summary="@string/start_new_tasks_with_todays_date"
+                android:title="@string/tasks_with_todays_date" />
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:icon="@drawable/ic_add_white_24dp"
+                android:key="@string/pref_key__todotxt__append_contexts_and_projects_on_end_of_task"
+                android:summary="@string/append_contexts_and_projects_on_end_of_task"
+                android:title="@string/append_contexts_and_projects" />
+        </PreferenceCategory>
+
+        <PreferenceCategory android:title="@string/syntax_highlighting">
+            <android.support.v7.preference.SeekBarPreference
+                android:defaultValue="870"
+                android:icon="@drawable/ic_highlight_black_24dp"
+                android:key="@string/pref_key__todotxt__hl_delay"
+                android:max="5000"
+                android:summary="@string/highlighting_delay_summary"
+                android:title="@string/highlighting_delay"
+                app:min="50" />
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- Most important settings -->
+    <PreferenceCategory android:title="@string/general">
+        <ListPreference
+            android:defaultValue="@string/app_theme_light"
+            android:dialogTitle="@string/theme"
+            android:entries="@array/pref_arrdisp__app_themes"
+            android:entryValues="@array/pref_arrkeys__app_themes"
+            android:icon="@drawable/ic_invert_colors_black_24dp"
+            android:key="@string/pref_key__app_theme"
+            android:summary="@string/theme_description"
+            android:title="@string/theme" />
+
+        <net.gsantner.opoc.preference.LanguagePreferenceCompat
+            android:icon="@drawable/ic_language_black_24dp"
+            android:key="@string/pref_key__language"
+            android:summary="@string/pref_desc__language"
+            android:title="@string/pref_title__language" />
+    </PreferenceCategory>
+
+</PreferenceScreen> <!-- Screen -->

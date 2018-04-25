@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="action_settings">सेटिंग्स</string>
+    <string name="settings">सेटिंग्स</string>
     <string name="light">हलका</string>
     <string name="dark">गहरा</string>
     <string name="delete">हटाना</string>
@@ -24,8 +24,8 @@
     <string name="select_folder">फोल्डर का चयन करें</string>
     <string name="edit">संपादित करें</string>
 
-    <string name="search_hint">नोट खोजें</string>
-    <string name="share_string">साझा करें &#8230;</string>
+    <string name="search_documents">नोट खोजें</string>
+    <string name="share_to">साझा करें &#8230;</string>
     <string name="share">बांटे</string>
     <string name="search">खोजें</string>
     <string name="preview">पूर्व दर्शन</string>
@@ -38,23 +38,23 @@
     <string name="share_html__mime_plaintext">HTML (सादा पाठ के रूप में)</string>
 
     <!-- Preferences -->
-    <string name="pref_title__remember_directory">स्टार्टअप पर अंतिम फ़ोल्डर स्थान याद रखें</string>
-    <string name="pref_title__font_choice">नोट संपादक फ़ॉन्ट</string>
-    <string name="pref_title__theme">बनावट</string>
-    <string name="pref_title__preview_first">नोट्स खोलते समय पहले पूर्वावलोकन करें</string>
+    <string name="remember_last_folder_location_on_startup">स्टार्टअप पर अंतिम फ़ोल्डर स्थान याद रखें</string>
+    <string name="document_editor_font">नोट संपादक फ़ॉन्ट</string>
+    <string name="theme">बनावट</string>
+    <string name="open_preview_when_open_documents">नोट्स खोलते समय पहले पूर्वावलोकन करें</string>
     <string name="about">जानकारी</string>
     <string name="plain_text">सादा टेक्स्ट</string>
-        <string name="file">फ़ाइल</string>
+    <string name="file">फ़ाइल</string>
     <string name="image">छवि</string>
     <string name="pref_title__font_size">फ़ॉन्ट आकार</string>
-    <string name="pref_title__show_markdown_shortcuts">मार्कडाउन शॉर्टकट बार दिखाएं</string>
-    <string name="pref_title__highlighting_activated">मार्कडाउन सिंटैक्स हाइलाइटिंग</string>
+    <string name="show_markdown_shortcuts_bar">मार्कडाउन शॉर्टकट बार दिखाएं</string>
+    <string name="markdown_syntax_highlighting">मार्कडाउन सिंटैक्स हाइलाइटिंग</string>
     <string name="pref_title__highlighting_delay">रीफ़्रेश को उजागर करने के लिए मिलीसेकेंड में देरी</string>
     <string name="pref_title__highlighting_delay_summary">उच्च मूल्य बैटरी पर आसान है</string>
     <string name="pref_title__smart_shortcuts">स्मार्ट कोष्ठक शॉर्टकट</string>
     <string name="pref_title__smart_shortcuts_summary">अगर पाठ का चयन किया जाता है, तो {}, [] और () चयन को घेरेगा</string>
-    <string name="pref_title__render_rtl">दाएं से बाएं भाषाओं के लिए प्रस्तुत करना</string>
-    <string name="error_cannot_create_save_dir">त्रुटि: निर्देशिका को सहेज नहीं सका</string>
+    <string name="render_for_right_to_left_languages">दाएं से बाएं भाषाओं के लिए प्रस्तुत करना</string>
+    <string name="error_cannot_create_notebook_dir">त्रुटि: निर्देशिका को सहेज नहीं सका</string>
 
     <string name="last_modified">अंतिम बार संशोधित: %s</string>
     <string name="number_of_files">फ़ाइलों की संख्या: %d</string>
@@ -68,14 +68,14 @@
     <string name="pref_summary__is_statusbar_hidden">इस दृश्य पर स्टेटस बार छुपाएं</string>
     <string name="pref_title__is_statusbar_hidden">स्थिति पट्टी छुपाएँ</string>
 
-    <string name="format_dialog_name_hint">नाम</string>
-    <string name="format_dialog_url_or_path_hint">URL / पथ</string>
-    <string name="format_link_dialog_title">लिंक सम्मिलित करें</string>
-    <string name="format_image_dialog_title">चित्र डालें</string>
+    <string name="name">नाम</string>
+    <string name="url_or_path">URL / पथ</string>
+    <string name="insert_link">लिंक सम्मिलित करें</string>
+    <string name="insert_image">चित्र डालें</string>
 
     <!-- About screen -->
     <string name="contributors">योगदानकर्ता</string>
-    <string name="pref_title__save_directory">स्टोरेज फोल्डर चुनें</string>
+    <string name="select_storage_folder">स्टोरेज फोल्डर चुनें</string>
     <string name="licenses">लाइसेंस</string>
     <string name="changelog">परिवर्तन खाता</string>
     <string name="more_information">अधिक जानकारी</string>
@@ -116,6 +116,6 @@
     <string name="current_date">आज की तारीख</string>
     <string name="archive">संग्रह</string>
     <string name="add_task">कार्य जोड़ें</string>
-    <string name="pref_summary__quicknote_filepath">दस्तावेज़ को QuickNote के रूप में लोड और सहेजा जाना चाहिए</string>
+    <string name="pref_summary__loaded_and_saved_as__plus_name">दस्तावेज़ को \"%s\" के रूप में लोड और सहेजा जाना चाहिए</string>
 
 </resources>

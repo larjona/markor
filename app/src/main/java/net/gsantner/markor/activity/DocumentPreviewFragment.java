@@ -1,44 +1,42 @@
 /*
- * Copyright (c) 2017 Gregor Santner and Markor contributors
+ * Copyright (c) 2017-2018 Gregor Santner
  *
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
 package net.gsantner.markor.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import net.gsantner.markor.R;
+import net.gsantner.markor.format.TextFormat;
 import net.gsantner.markor.model.Document;
-import net.gsantner.markor.model.DocumentLoader;
-import net.gsantner.markor.renderer.MarkDownRenderer;
-import net.gsantner.markor.ui.BaseFragment;
 import net.gsantner.markor.util.ContextUtils;
+import net.gsantner.markor.util.DocumentIO;
+import net.gsantner.markor.util.MarkorWebViewClient;
+import net.gsantner.opoc.activity.GsFragmentBase;
 
 import java.io.File;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class DocumentPreviewFragment extends BaseFragment {
+public class DocumentPreviewFragment extends GsFragmentBase implements TextFormat.TextFormatApplier {
     public static boolean showEditOnBack = false;
     public static final String FRAGMENT_TAG = "DocumentPreviewFragment";
 
     public static DocumentPreviewFragment newInstance(Document document) {
         DocumentPreviewFragment f = new DocumentPreviewFragment();
         Bundle args = new Bundle();
-        args.putSerializable(DocumentLoader.EXTRA_DOCUMENT, document);
+        args.putSerializable(DocumentIO.EXTRA_DOCUMENT, document);
         f.setArguments(args);
         return f;
     }
@@ -46,7 +44,7 @@ public class DocumentPreviewFragment extends BaseFragment {
     public static DocumentPreviewFragment newInstance(File path) {
         DocumentPreviewFragment f = new DocumentPreviewFragment();
         Bundle args = new Bundle();
-        args.putSerializable(DocumentLoader.EXTRA_PATH, path);
+        args.putSerializable(DocumentIO.EXTRA_PATH, path);
         f.setArguments(args);
         return f;
     }
@@ -54,20 +52,15 @@ public class DocumentPreviewFragment extends BaseFragment {
     @BindView(R.id.preview__activity__webview)
     WebView _webView;
 
-    private View _view;
-    private Context _context;
     private Document _document;
+    private TextFormat _textFormat;
 
     public DocumentPreviewFragment() {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.document__fragment__preview, container, false);
-        ButterKnife.bind(this, view);
-        _view = view;
-        _context = view.getContext();
-        return view;
+    protected int getLayoutResId() {
+        return R.layout.document__fragment__preview;
     }
 
     @Override
@@ -75,9 +68,14 @@ public class DocumentPreviewFragment extends BaseFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             WebView.enableSlowWholeDocumentDraw();
         }
+        _webView.setWebViewClient(new MarkorWebViewClient(getActivity()));
+        WebSettings webSettings = _webView.getSettings();
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+
 
         _document = loadDocument();
-        showDocument();
+        applyTextFormat(_document.getFormat()); //showDocument();
     }
 
     private void showDocument() {
@@ -87,7 +85,7 @@ public class DocumentPreviewFragment extends BaseFragment {
             da.setDocumentTitle(_document.getTitle());
             da.setDocument(_document);
         }
-        MarkDownRenderer.renderMarkdownIntoWebview(_document, _webView);
+        _textFormat.getConverter().convertMarkupShowInWebView(_document, _webView);
     }
 
     @Override
@@ -112,7 +110,13 @@ public class DocumentPreviewFragment extends BaseFragment {
     }
 
     private Document loadDocument() {
-        return DocumentLoader.loadDocument(getActivity(), getArguments(), _document);
+        return DocumentIO.loadDocument(getActivity(), getArguments(), _document);
+    }
+
+    @Override
+    public void applyTextFormat(int textFormatId) {
+        _textFormat = TextFormat.getFormat(textFormatId, getActivity(), _document);
+        showDocument();
     }
 
     @Override
@@ -133,12 +137,16 @@ public class DocumentPreviewFragment extends BaseFragment {
             Activity activity = getActivity();
             if (activity != null && activity instanceof DocumentActivity) {
                 DocumentActivity da = ((DocumentActivity) activity);
-                da.showEditor(_document, null, false);
+                da.showTextEditor(_document, null, false);
             }
             return true;
         }
         return false;
     }
+
+    //
+    //
+    //
 
     public WebView getWebview() {
         return _webView;

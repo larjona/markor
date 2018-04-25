@@ -1,22 +1,26 @@
 #### General information
 
-* **Device:**   <!-- eg Nexus 5 -->
-* **Android Version:**  <!--eg Android 7.1 -->
-* **App version:**  <!-- See in About - e.g. v0.1.1 -->
+* **App version:** 
+* **System:** 
 
-#### Steps to reproduce
-
-1. …
-2. …
-3. …
+#### Description
 
 
-#### Expected result
-**What is the expected output?** 
+#### Log
 
-**What do you see instead?**
+<!-- 
+  Look for already reported issues before posting!
+  Also take a look at documentation and wiki, or write in the project chat.
 
-<!--
-Upload screenshots via drag&drop if needed and apply resizing:
-`<img width="30%" height="30%" src="URL">`
+  App version: The version of the app installed and the installation source. Example: v0.3.5 F-Droid
+               Please keep in mind that only the latest downloadable version is supported and that there are no backports to older versions.
+  System:      Information about where the app is running. Give all details you know, but at least the Android OS version.
+               Example: Android 8.0.1, Nexus 5, LineageOS
+
+  Description:
+  What this is about, what happens and what is expected to happen. What needs to be done for it to happen.
+  If a crash is happening a log is needed. Screenshots or demonstration videos are always helpful too.
+
+  About logging:
+  https://gsantner.net/android-contribution-guide/?packageid=net.gsantner.markor&project=markor&web=https://github.com/gsantner/markor#logcat
 -->

@@ -1,15 +1,13 @@
-/*
- * ------------------------------------------------------------------------------
- * Gregor Santner <gsantner.net> & Lonami Exo <lonamiwebs.github.io> wrote
- * this. You can do whatever you want with it. If we meet some day, and you
- * think it is worth it, you can buy us a coke in return. Provided as is without
- * any kind of warranty. Do not blame or sue us if something goes wrong.
- * No attribution required.    - Gregor Santner & Lonami Exo
+/*#######################################################
  *
- * License: Creative Commons Zero (CC0 1.0)
- *  http://creativecommons.org/publicdomain/zero/1.0/
- * ----------------------------------------------------------------------------
- */
+ *   Maintained by Gregor Santner, 2017-
+ *   https://gsantner.net/
+ *
+ *   License: Apache 2.0
+ *  https://github.com/gsantner/opoc/#licensing
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+#########################################################*/
 package net.gsantner.opoc.util;
 
 
@@ -31,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class FileUtils {
@@ -305,6 +304,37 @@ public class FileUtils {
             return file.setLastModified(System.currentTimeMillis());
         } catch (IOException e) {
             return false;
+        }
+    }
+
+    // Get relative path to specified destination
+    public static String relativePath(File src, File dest) {
+        try {
+            String[] srcSplit = (src.isDirectory() ? src : src.getParentFile()).getCanonicalPath().split(Pattern.quote(File.separator));
+            String[] destSplit = dest.getCanonicalPath().split(Pattern.quote(File.separator));
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+
+            for (; i < destSplit.length && i < srcSplit.length; ++i) {
+                if (!destSplit[i].equals(srcSplit[i]))
+                    break;
+            }
+            if (i != srcSplit.length) {
+                for (int iUpperDir = i; iUpperDir < srcSplit.length; ++iUpperDir) {
+                    sb.append("..");
+                    sb.append(File.separator);
+                }
+            }
+            for (; i < destSplit.length; ++i) {
+                sb.append(destSplit[i]);
+                sb.append(File.separator);
+            }
+            if (!dest.getPath().endsWith("/") && !dest.getPath().endsWith("\\")) {
+                sb.delete(sb.length() - File.separator.length(), sb.length());
+            }
+            return sb.toString();
+        } catch (IOException | NullPointerException exception) {
+            return null;
         }
     }
 }

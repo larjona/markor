@@ -1,14 +1,13 @@
-/*
- * ------------------------------------------------------------------------------
- * Gregor Santner <gsantner.net> wrote this. You can do whatever you want
- * with it. If we meet some day, and you think it is worth it, you can buy me a
- * coke in return. Provided as is without any kind of warranty. Do not blame or
- * sue me if something goes wrong. No attribution required.    - Gregor Santner
+/*#######################################################
  *
- * License: Creative Commons Zero (CC0 1.0)
- *  http://creativecommons.org/publicdomain/zero/1.0/
- * ----------------------------------------------------------------------------
- */
+ *   Maintained by Gregor Santner, 2017-
+ *   https://gsantner.net/
+ *
+ *   License: Apache 2.0
+ *  https://github.com/gsantner/opoc/#licensing
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+#########################################################*/
 /*
  * Revision 001 of FilesystemDialogCreator
  * A simple filesystem dialog with file, folder and multiple selection
@@ -87,9 +86,6 @@ public class FilesystemDialog extends DialogFragment
     @BindView(R.id.ui__filesystem_dialog__home)
     ImageView _homeButton;
 
-    @BindView(R.id.ui__filesystem_dialog__dir_up)
-    ImageView _upButton;
-
     @BindView(R.id.ui__filesystem_dialog__search_button)
     ImageView _buttonSearch;
 
@@ -118,6 +114,17 @@ public class FilesystemDialog extends DialogFragment
     public void onViewCreated(View root, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(root, savedInstanceState);
         Context context = getContext();
+        if (_buttonCancel == null) {
+            ButterKnife.bind(this, root);
+            if (_buttonCancel == null) {
+                System.err.println("Error: at " + getClass().getName() + " :: Could not bind UI");
+            }
+        }
+
+        if (_dopt == null || _buttonCancel == null) {
+            dismiss();
+            return;
+        }
 
         _buttonCancel.setVisibility(_dopt.cancelButtonEnable ? View.VISIBLE : View.GONE);
         _buttonCancel.setTextColor(rcolor(_dopt.accentColor));
@@ -131,10 +138,6 @@ public class FilesystemDialog extends DialogFragment
         _dialogTitle.setBackgroundColor(rcolor(_dopt.primaryColor));
         _dialogTitle.setText(_dopt.titleText);
         _dialogTitle.setVisibility(_dopt.titleTextEnable ? View.VISIBLE : View.GONE);
-
-        _upButton.setImageResource(_dopt.upButtonImage);
-        _upButton.setVisibility(_dopt.upButtonEnable ? View.VISIBLE : View.GONE);
-        _upButton.setColorFilter(rcolor(_dopt.primaryTextColor), android.graphics.PorterDuff.Mode.SRC_ATOP);
 
         _homeButton.setImageResource(_dopt.homeButtonImage);
         _homeButton.setVisibility(_dopt.homeButtonEnable ? View.VISIBLE : View.GONE);
@@ -174,14 +177,15 @@ public class FilesystemDialog extends DialogFragment
 
     @OnTextChanged(value = R.id.ui__filesystem_dialog__search_edit, callback = OnTextChanged.Callback.TEXT_CHANGED)
     public void changeAdapterFilter(CharSequence s, int start, int before, int count) {
-        _filesystemDialogAdapter.getFilter().filter(s.toString());
+        if (_filesystemDialogAdapter != null) {
+            _filesystemDialogAdapter.getFilter().filter(s.toString());
+        }
     }
 
-    @OnClick({R.id.ui__filesystem_dialog__dir_up, R.id.ui__filesystem_dialog__home, R.id.ui__filesystem_dialog__search_button, R.id.ui__filesystem_dialog__button_cancel, R.id.ui__filesystem_dialog__button_ok})
+    @OnClick({R.id.ui__filesystem_dialog__home, R.id.ui__filesystem_dialog__search_button, R.id.ui__filesystem_dialog__button_cancel, R.id.ui__filesystem_dialog__button_ok})
     public void onClicked(View view) {
         switch (view.getId()) {
             case R.id.ui__filesystem_dialog__button_ok:
-            case R.id.ui__filesystem_dialog__dir_up:
             case R.id.ui__filesystem_dialog__home: {
                 _filesystemDialogAdapter.onClick(view);
                 break;

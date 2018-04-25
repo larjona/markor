@@ -1,62 +1,57 @@
 /*
- * Copyright (c) 2017 Gregor Santner and Markor contributors
+ * Copyright (c) 2017-2018 Gregor Santner
  *
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
 package net.gsantner.markor.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import net.gsantner.markor.App;
 import net.gsantner.markor.R;
-import net.gsantner.markor.editor.HighlightingEditor;
-import net.gsantner.markor.model.Constants;
+import net.gsantner.markor.format.TextFormat;
+import net.gsantner.markor.format.highlighter.HighlightingEditor;
 import net.gsantner.markor.model.Document;
-import net.gsantner.markor.model.DocumentLoader;
-import net.gsantner.markor.ui.BaseFragment;
 import net.gsantner.markor.util.AppSettings;
 import net.gsantner.markor.util.ContextUtils;
+import net.gsantner.markor.util.DocumentIO;
 import net.gsantner.markor.widget.MarkorWidgetProvider;
+import net.gsantner.opoc.activity.GsFragmentBase;
 import net.gsantner.opoc.util.ActivityUtils;
 
 import java.io.File;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 
 @SuppressWarnings({"UnusedReturnValue", "RedundantCast"})
-public class DocumentEditFragment extends BaseFragment {
+public class DocumentEditFragment extends GsFragmentBase implements TextFormat.TextFormatApplier {
     public static final int HISTORY_DELTA = 5000;
     public static final String FRAGMENT_TAG = "DocumentEditFragment";
     private static final String SAVESTATE_DOCUMENT = "DOCUMENT";
+    private static final String SAVESTATE_CURSOR_POS = "CURSOR_POS";
     public static boolean showPreviewOnBack = false;
 
     public static DocumentEditFragment newInstance(Document document) {
         DocumentEditFragment f = new DocumentEditFragment();
         Bundle args = new Bundle();
-        args.putSerializable(DocumentLoader.EXTRA_DOCUMENT, document);
+        args.putSerializable(DocumentIO.EXTRA_DOCUMENT, document);
         f.setArguments(args);
         return f;
     }
@@ -64,56 +59,66 @@ public class DocumentEditFragment extends BaseFragment {
     public static DocumentEditFragment newInstance(File path, boolean pathIsFolder, boolean allowRename) {
         DocumentEditFragment f = new DocumentEditFragment();
         Bundle args = new Bundle();
-        args.putSerializable(DocumentLoader.EXTRA_PATH, path);
-        args.putBoolean(DocumentLoader.EXTRA_PATH_IS_FOLDER, pathIsFolder);
-        args.putBoolean(DocumentLoader.EXTRA_ALLOW_RENAME, allowRename);
+        args.putSerializable(DocumentIO.EXTRA_PATH, path);
+        args.putBoolean(DocumentIO.EXTRA_PATH_IS_FOLDER, pathIsFolder);
+        args.putBoolean(DocumentIO.EXTRA_ALLOW_RENAME, allowRename);
         f.setArguments(args);
         return f;
     }
 
 
-    @BindView(R.id.note__activity__note_content_editor)
-    HighlightingEditor _contentEditor;
+    @BindView(R.id.document__fragment__edit__highlighting_editor)
+    HighlightingEditor _hlEditor;
 
-    @BindView(R.id.note__activity__markdownchar_bar)
-    ViewGroup _markdownShortcutBar;
+    @BindView(R.id.document__fragment__edit__textmodule_actions_bar)
+    ViewGroup _textModuleActionsBar;
 
-    private View _view;
-    private Context _context;
     private Document _document;
+    private TextFormat _textFormat;
 
     public DocumentEditFragment() {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.document__fragment__edit, container, false);
-        ButterKnife.bind(this, view);
-        _view = view;
-        _context = view.getContext();
-        return view;
+    protected int getLayoutResId() {
+        return R.layout.document__fragment__edit;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        setupMarkdownShortcutBar();
-        setupAppearancePreferences();
+        super.onViewCreated(view, savedInstanceState);
+        //applyTextFormat(TextFormat.FORMAT_PLAIN);
+        setupAppearancePreferences(view);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVESTATE_DOCUMENT)) {
             _document = (Document) savedInstanceState.getSerializable(SAVESTATE_DOCUMENT);
         }
         _document = loadDocument();
         loadDocumentIntoUi();
+        if (savedInstanceState != null && savedInstanceState.containsKey(SAVESTATE_CURSOR_POS)) {
+            int cursor = savedInstanceState.getInt(SAVESTATE_CURSOR_POS);
+            if (cursor >= 0 && cursor < _hlEditor.length()) {
+                _hlEditor.setSelection(cursor);
+            }
+        }
 
         new ActivityUtils(getActivity()).hideSoftKeyboard();
-        _contentEditor.clearFocus();
+        AppSettings appSettings = new AppSettings(view.getContext());
+        _hlEditor.clearFocus();
+        _hlEditor.setLineSpacing(0, appSettings.getEditorLineSpacing());
     }
 
     @Override
     public void onResume() {
         super.onResume();
         checkReloadDisk();
-        _contentEditor.setText(_document.getContent());
+        int cursor = _hlEditor.getSelectionStart();
+        _hlEditor.setText(_document.getContent());
+        if (cursor >= 0 && cursor < _hlEditor.length()) {
+            _hlEditor.setSelection(cursor);
+        }
+        AppSettings appSettings = new AppSettings(getContext());
+        _hlEditor.setGravity(appSettings.isEditorStartEditingInCenter() ? Gravity.CENTER : Gravity.NO_GRAVITY);
     }
 
     @Override
@@ -124,33 +129,35 @@ public class DocumentEditFragment extends BaseFragment {
         cu.tintMenuItems(menu, true, Color.WHITE);
         cu.setSubMenuIconsVisiblity(menu, true);
 
+        boolean enable;
         Drawable drawable;
         drawable = menu.findItem(R.id.action_undo).setEnabled(_document.canGoToEarlierVersion()).getIcon();
         drawable.mutate().setAlpha(_document.canGoToEarlierVersion() ? 255 : 40);
         drawable = menu.findItem(R.id.action_redo).setEnabled(_document.canGoToNewerVersion()).getIcon();
         drawable.mutate().setAlpha(_document.canGoToNewerVersion() ? 255 : 40);
+        enable = !(_document.getContent().isEmpty() || _document.getTitle().isEmpty());
+        drawable = menu.findItem(R.id.action_save).setEnabled(enable).getIcon();
+        drawable.mutate().setAlpha(enable ? 255 : 40);
     }
 
     public void loadDocumentIntoUi() {
-        int editorpos = _contentEditor.getSelectionStart();
-        _contentEditor.setText(_document.getContent());
-        editorpos = editorpos > _contentEditor.length() ? _contentEditor.length() - 1 : editorpos;
-        _contentEditor.setSelection(editorpos < 0 ? 0 : editorpos);
+        int editorpos = _hlEditor.getSelectionStart();
+        _hlEditor.setText(_document.getContent());
+        editorpos = editorpos > _hlEditor.length() ? _hlEditor.length() - 1 : editorpos;
+        _hlEditor.setSelection(editorpos < 0 ? 0 : editorpos);
         Activity activity = getActivity();
         if (activity != null && activity instanceof DocumentActivity) {
             DocumentActivity da = ((DocumentActivity) activity);
             da.setDocumentTitle(_document.getTitle());
             da.setDocument(_document);
         }
+        applyTextFormat(_document.getFormat());
+        _textFormat.getTextModuleActions().setDocument(_document);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_preview: {
-                // Handled by parent
-                return false;
-            }
             case R.id.action_undo: {
                 if (_document.canGoToEarlierVersion()) {
                     _document.goToEarlierVersion();
@@ -165,23 +172,25 @@ public class DocumentEditFragment extends BaseFragment {
                 }
                 return true;
             }
+            case R.id.action_save: {
+                saveDocument();
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
 
     private long _lastChangedThreadStart = 0;
 
-    @OnTextChanged(value = R.id.note__activity__note_content_editor, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    @OnTextChanged(value = R.id.document__fragment__edit__highlighting_editor, callback = OnTextChanged.Callback.TEXT_CHANGED)
     public void onContentEditValueChanged(CharSequence text) {
         if ((_lastChangedThreadStart + HISTORY_DELTA) < System.currentTimeMillis()) {
             _lastChangedThreadStart = System.currentTimeMillis();
-            _contentEditor.postDelayed(new Runnable() {
-                public void run() {
-                    _document.setContent(text.toString());
-                    Activity activity = getActivity();
-                    if (activity != null && activity instanceof AppCompatActivity) {
-                        ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
-                    }
+            _hlEditor.postDelayed(() -> {
+                _document.setContent(text.toString());
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof AppCompatActivity) {
+                    ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
                 }
             }, HISTORY_DELTA);
         }
@@ -189,65 +198,49 @@ public class DocumentEditFragment extends BaseFragment {
         if (activity != null && activity instanceof AppCompatActivity) {
             ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
         }
+
     }
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     private Document loadDocument() {
-        Document document = DocumentLoader.loadDocument(getActivity(), getArguments(), _document);
+        Document document = DocumentIO.loadDocument(getActivity(), getArguments(), _document);
         if (document.getHistory().isEmpty()) {
             document.forceAddNextChangeToHistory();
             document.addToHistory();
         }
+
         return document;
     }
 
-    private void setupMarkdownShortcutBar() {
-        if (AppSettings.get().isShowMarkdownShortcuts() && _markdownShortcutBar.getChildCount() == 0) {
-            // Smart Actions
-            for (int[] actions : Constants.KEYBOARD_SMART_ACTIONS_ICON) {
-                appendMarkdownShortcutToBar(actions[0], new KeyboardSmartActionsListener(Constants.KEYBOARD_SMART_ACTIONS[actions[1]]));
-            }
-
-            // Regular actions
-            for (int[] actions : Constants.KEYBOARD_REGULAR_ACTIONS_ICONS) {
-                appendMarkdownShortcutToBar(actions[0], new KeyboardRegularActionListener(Constants.KEYBOARD_REGULAR_ACTIONS[actions[1]]));
-            }
-
-            // Extra actions
-            for (int[] actions : Constants.KEYBOARD_EXTRA_ACTIONS_ICONS) {
-                appendMarkdownShortcutToBar(actions[0], new KeyboardExtraActionsListener(actions[1]));
-            }
-        } else if (!AppSettings.get().isShowMarkdownShortcuts()) {
-            _view.findViewById(R.id.note__activity__scroll_markdownchar_bar).setVisibility(View.GONE);
+    public void applyTextFormat(int textFormatId) {
+        _textModuleActionsBar.removeAllViews();
+        _textFormat = TextFormat.getFormat(textFormatId, getActivity(), _document);
+        _hlEditor.setHighlighter(_textFormat.getHighlighter());
+        _textFormat.getTextModuleActions()
+                .setHighlightingEditor(_hlEditor)
+                .appendTextModuleActionsToBar(_textModuleActionsBar);
+        if (_textModuleActionsBar.getChildCount() == 0) {
+            _textModuleActionsBar.setVisibility(View.GONE);
+        } else {
+            _textModuleActionsBar.setVisibility(View.VISIBLE);
         }
     }
 
-    private void setupAppearancePreferences() {
+    private void setupAppearancePreferences(View fragmentView) {
         AppSettings as = AppSettings.get();
-        _contentEditor.setTextSize(TypedValue.COMPLEX_UNIT_SP, as.getFontSize());
-        _contentEditor.setTypeface(Typeface.create(as.getFontFamily(), Typeface.NORMAL));
+        _hlEditor.setTextSize(TypedValue.COMPLEX_UNIT_SP, as.getFontSize());
+        _hlEditor.setTypeface(Typeface.create(as.getFontFamily(), Typeface.NORMAL));
 
         if (as.isDarkThemeEnabled()) {
-            _contentEditor.setBackgroundColor(getResources().getColor(R.color.dark_grey));
-            _contentEditor.setTextColor(getResources().getColor(android.R.color.white));
-            _view.findViewById(R.id.note__activity__scroll_markdownchar_bar).setBackgroundColor(getResources().getColor(R.color.dark_grey));
+            _hlEditor.setBackgroundColor(getResources().getColor(R.color.dark_grey));
+            _hlEditor.setTextColor(getResources().getColor(android.R.color.white));
+            fragmentView.findViewById(R.id.document__fragment__edit__textmodule_actions_bar__scrolling_parent).setBackgroundColor(getResources().getColor(R.color.dark_grey));
         } else {
-            _contentEditor.setBackgroundColor(getResources().getColor(android.R.color.white));
-            _contentEditor.setTextColor(getResources().getColor(R.color.dark_grey));
-            _view.findViewById(R.id.note__activity__scroll_markdownchar_bar)
+            _hlEditor.setBackgroundColor(getResources().getColor(android.R.color.white));
+            _hlEditor.setTextColor(getResources().getColor(R.color.dark_grey));
+            fragmentView.findViewById(R.id.document__fragment__edit__textmodule_actions_bar__scrolling_parent)
                     .setBackgroundColor(getResources().getColor(R.color.lighter_grey));
         }
-    }
-
-    private void appendMarkdownShortcutToBar(int shortcut, View.OnClickListener l) {
-        ImageView btn = (ImageView) getLayoutInflater().inflate(R.layout.ui__quick_keyboard_button, (ViewGroup) null);
-        btn.setImageResource(shortcut);
-        btn.setOnClickListener(l);
-
-        boolean isDarkTheme = AppSettings.get().isDarkThemeEnabled();
-        btn.setColorFilter(ContextCompat.getColor(_context,
-                isDarkTheme ? android.R.color.white : R.color.grey));
-        _markdownShortcutBar.addView(btn);
     }
 
     @Override
@@ -273,9 +266,12 @@ public class DocumentEditFragment extends BaseFragment {
     // Save the file
     // Only supports java.io.File. TODO: Android Content
     public boolean saveDocument() {
-        boolean argAllowRename = getArguments() == null || getArguments().getBoolean(DocumentLoader.EXTRA_ALLOW_RENAME, true);
-        boolean ret = DocumentLoader.saveDocument(_document, argAllowRename, _contentEditor.getText().toString());
-        updateLauncherWidgets();
+        boolean ret = false;
+        if (isAdded() && _hlEditor != null) {
+            boolean argAllowRename = getArguments() == null || getArguments().getBoolean(DocumentIO.EXTRA_ALLOW_RENAME, true);
+            ret = DocumentIO.saveDocument(_document, argAllowRename, _hlEditor.getText().toString());
+            updateLauncherWidgets();
+        }
         return ret;
     }
 
@@ -283,13 +279,16 @@ public class DocumentEditFragment extends BaseFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         saveDocument();
         outState.putSerializable(SAVESTATE_DOCUMENT, _document);
+        if (_hlEditor != null) {
+            outState.putSerializable(SAVESTATE_CURSOR_POS, _hlEditor.getSelectionStart());
+        }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onPause() {
-        saveDocument();
         super.onPause();
+        saveDocument();
     }
 
     @Override
@@ -311,172 +310,36 @@ public class DocumentEditFragment extends BaseFragment {
         Activity a = getActivity();
         if (isVisibleToUser && a != null && a instanceof MainActivity) {
             checkReloadDisk();
+        } else if (!isVisibleToUser && _document != null) {
+            saveDocument();
         }
     }
 
     private void checkReloadDisk() {
-        Document cmp = DocumentLoader.loadDocument(getActivity(), getArguments(), null);
-        if (!cmp.getContent().equals(_document.getContent())) {
+        Document cmp = DocumentIO.loadDocument(getActivity(), getArguments(), null);
+        if (_document != null && cmp != null && cmp.getContent() != null && !cmp.getContent().equals(_document.getContent())) {
             _document = cmp;
             loadDocument();
             loadDocumentIntoUi();
         }
     }
 
-    //
-    //
-    //
-    //
-
-    private class KeyboardRegularActionListener implements View.OnClickListener {
-        String _action;
-
-        public KeyboardRegularActionListener(String action) {
-            _action = action;
-        }
-
-        @Override
-        public void onClick(View v) {
-
-            if (_contentEditor.hasSelection()) {
-                String text = _contentEditor.getText().toString();
-                int selectionStart = _contentEditor.getSelectionStart();
-                int selectionEnd = _contentEditor.getSelectionEnd();
-
-                //Check if Selection includes the shortcut characters
-                if (text.substring(selectionStart, selectionEnd)
-                        .matches("(>|#{1,3}|-|[1-9]\\.)(\\s)?[a-zA-Z0-9\\s]*")) {
-
-                    text = text.substring(selectionStart + _action.length(), selectionEnd);
-                    _contentEditor.getText()
-                            .replace(selectionStart, selectionEnd, text);
-
-                }
-                //Check if Selection is Preceded by shortcut characters
-                else if ((selectionStart >= _action.length()) && (text.substring(selectionStart - _action.length(), selectionEnd)
-                        .matches("(>|#{1,3}|-|[1-9]\\.)(\\s)?[a-zA-Z0-9\\s]*"))) {
-
-                    text = text.substring(selectionStart, selectionEnd);
-                    _contentEditor.getText()
-                            .replace(selectionStart - _action.length(), selectionEnd, text);
-
-                }
-                //Condition to insert shortcut preceding the selection
-                else {
-                    _contentEditor.getText().insert(selectionStart, _action);
-                }
-            } else {
-                //Condition for Empty Selection
-                _contentEditor.getText().insert(_contentEditor.getSelectionStart(), _action);
+    @Override
+    public void onFragmentFirstTimeVisible() {
+        AppSettings as = new AppSettings(getContext());
+        if (_savedInstanceState == null || !_savedInstanceState.containsKey(SAVESTATE_CURSOR_POS)) {
+            //  TODO
+            if (as.isEditorStartOnBotttom() && _hlEditor.length() > 0) {
+                _hlEditor.requestFocus();
+                _hlEditor.setSelection(_hlEditor.length());
             }
         }
     }
 
-    private class KeyboardSmartActionsListener implements View.OnClickListener {
-        String _action;
-
-        public KeyboardSmartActionsListener(String action) {
-            _action = action;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (_contentEditor.hasSelection()) {
-                String text = _contentEditor.getText().toString();
-                int selectionStart = _contentEditor.getSelectionStart();
-                int selectionEnd = _contentEditor.getSelectionEnd();
-
-                //Check if Selection includes the shortcut characters
-                if ((text.substring(selectionStart, selectionEnd)
-                        .matches("(\\*\\*|~~|_|`)[a-zA-Z0-9\\s]*(\\*\\*|~~|_|`)"))) {
-
-                    text = text.substring(selectionStart + _action.length(),
-                            selectionEnd - _action.length());
-                    _contentEditor.getText()
-                            .replace(selectionStart, selectionEnd, text);
-
-                }
-                //Check if Selection is Preceded and succeeded by shortcut characters
-                else if (((selectionEnd <= (_contentEditor.length() - _action.length())) &&
-                        (selectionStart >= _action.length())) &&
-                        (text.substring(selectionStart - _action.length(),
-                                selectionEnd + _action.length())
-                                .matches("(\\*\\*|~~|_|`)[a-zA-Z0-9\\s]*(\\*\\*|~~|_|`)"))) {
-
-                    text = text.substring(selectionStart, selectionEnd);
-                    _contentEditor.getText()
-                            .replace(selectionStart - _action.length(),
-                                    selectionEnd + _action.length(), text);
-
-                }
-                //Condition to insert shortcut preceding and succeeding the selection
-                else {
-                    _contentEditor.getText().insert(selectionStart, _action);
-                    _contentEditor.getText().insert(_contentEditor.getSelectionEnd(), _action);
-                }
-            } else {
-                //Condition for Empty Selection
-                _contentEditor.getText().insert(_contentEditor.getSelectionStart(), _action)
-                        .insert(_contentEditor.getSelectionEnd(), _action);
-                _contentEditor.setSelection(_contentEditor.getSelectionStart() - _action.length());
-            }
-        }
-
-    }
-
-    private class KeyboardExtraActionsListener implements View.OnClickListener {
-        int _action;
-
-        public KeyboardExtraActionsListener(int action) {
-            _action = action;
-        }
-
-        @Override
-        public void onClick(View view) {
-            getAlertDialog(_action);
-        }
-    }
-
-    private void getAlertDialog(int action) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final View view = getLayoutInflater().inflate(R.layout.format_dialog, (ViewGroup) null);
-
-        final EditText link_name = view.findViewById(R.id.format_dialog_name);
-        final EditText link_url = view.findViewById(R.id.format_dialog_url);
-        link_name.setHint(getString(R.string.format_dialog_name_hint));
-        link_url.setHint(getString(R.string.format_dialog_url_or_path_hint));
-
-        //Insert Link Action
-        if (action == 1) {
-            builder.setView(view)
-                    .setTitle(getString(R.string.format_link_dialog_title))
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            _contentEditor.getText().insert(_contentEditor.getSelectionStart(),
-                                    String.format("[%s](%s)", link_name.getText().toString(),
-                                            link_url.getText().toString()));
-                        }
-                    });
-        }
-        //Insert Image Action
-        else if (action == 2) {
-            builder.setView(view)
-                    .setTitle(getString(R.string.format_image_dialog_title))
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            _contentEditor.getText().insert(_contentEditor.getSelectionStart(),
-                                    String.format("![%s](%s)", link_name.getText().toString(),
-                                            link_url.getText().toString()));
-                        }
-                    });
-        }
-
-        builder.show();
-    }
+    //
+    //
+    //
+    //
 
     public Document getDocument() {
         return _document;

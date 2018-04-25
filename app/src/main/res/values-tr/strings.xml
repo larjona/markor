@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="action_settings">Ayarlar</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="settings">Ayarlar</string>
     <string name="light">Açık</string>
     <string name="dark">Koyu</string>
     <string name="delete">Sil</string>
     <string name="rename">Yeniden Adlandır</string>
     <string name="confirm_delete">Silmeyi Onayla</string>
+    <string name="confirm_delete_description">Bu %syi gerçekten silmek istiyor musunuz?</string>
+    <string name="confirm_overwrite">Üzerine Yazmayı Onayla</string>
     <string name="confirm_overwrite_description">Dosya zaten var, üzerine yazılsın mı?</string>
+    <string name="browse_filesystem">Dosya sistemine göz at</string>
     <string name="title">Başlık</string>
     <string name="empty_directory">Bu dizin boş</string>
-    <string name="navigate_up_folder">Önceki klasöre dön</string>
     <string name="folder_name_hint">Klasörünüzün adını girin</string>
     <string name="create_folder">Klasör Oluştur</string>
-    <string name="create_note">Not Oluştur</string>
+    <string name="create_new_document">Yeni belge oluştur</string>
     <string name="move">Taşı</string>
 
     <string name="import_from_device">Cihazdan içe aktar</string>
+    <string name="import_">İçe Aktar</string>
+    <string name="append_to__arg_document_name">%s ekle</string>
     <string name="select_folder">Klasör seç</string>
+    <string name="edit">Düzenle</string>
 
-    <string name="search_hint">Notlarda ara</string>
-    <string name="share_string">Şununla paylaş&#8230;</string>
+    <string name="search_documents">Belgelerde ara</string>
+    <string name="share_to">Şununla paylaş&#8230;</string>
     <string name="share">Paylaş</string>
     <string name="search">Ara</string>
     <string name="preview">Önizleme</string>
-    <string name="app_settings">Uygulama Ayarları</string>
-    <string name="editor_settings">Düzenleyici Ayarları</string>
+    <string name="editor">Düzenleyici</string>
     <string name="folders">Klasörler</string>
     <string name="files">Dosyalar</string>
+    <string name="document_one">Belge</string>
+    <string name="document_multiple">Belge</string>
+    <string name="share_html__mime_plaintext">HTML (düz metin olarak)</string>
 
     <!-- Preferences -->
-    <string name="pref_title__remember_directory">Başlangıçta son klasör konumunu hatırla</string>
-    <string name="pref_title__font_choice">Not Düzenleyicisi Yazı Tipi</string>
-    <string name="pref_title__theme">Tema</string>
-    <string name="pref_title__preview_first">Notları önizlemede aç</string>
+    <string name="document_editor_font">Belge Düzenleyicisi Yazı Tipi</string>
+    <string name="theme">Tema</string>
+    <string name="open_preview_when_open_documents">Belgeleri açarken önizlemede aç</string>
     <string name="about">Markor Hakkında</string>
     <string name="plain_text">Düz Metin</string>
     <string name="file">Dosya</string>
     <string name="image">Görüntü</string>
     <string name="pref_title__font_size">Yazı Tipi Boyutu</string>
-    <string name="pref_title__show_markdown_shortcuts">Kısayol çubuğunu göster</string>
-    <string name="pref_title__highlighting_activated">Sözdizimini vurgula</string>
-    <string name="pref_title__highlighting_delay">Vurgulamaların yenilenmesi için milisaniye cinsinden gecikme süresi</string>
-    <string name="pref_title__highlighting_delay_summary">Daha yüksek değerler pil tüketimini azaltır</string>
-    <string name="pref_title__smart_shortcuts">Akıllı parantez kısayolları</string>
-    <string name="pref_title__smart_shortcuts_summary">Metin seçilirse, {}, [] ve () seçimi çevreleyecektir</string>
-    <string name="pref_title__render_rtl">Sağdan sola yazılan diller için metin yönünü değiştir</string>
-    <string name="error_cannot_create_save_dir">Hata: Kaydetme dizini oluşturulamıyor</string>
+    <string name="render_for_right_to_left_languages">Sağdan sola yazılan diller için metin yönünü değiştir</string>
+    <string name="error_cannot_create_notebook_dir">Hata: Kaydetme dizini oluşturulamıyor</string>
 
-    <!-- Font Size -->
-
-    <!-- Hard coded string fix -->
     <string name="last_modified">Son düzenleme: %s</string>
-    <string name="number_of_files">Dosya sayısı: %d</string>
     <string name="select_this_folder">Bu klasörü seç</string>
     <string name="select">Seç</string>
     <string name="create">Oluştur</string>
@@ -62,15 +58,15 @@
     <string name="pref_summary__is_statusbar_hidden">Bu görünümde durum çubuğunu gizle</string>
     <string name="pref_title__is_statusbar_hidden">Durum çubuğunu gizle</string>
 
-    <string name="format_dialog_name_hint">Ad</string>
-    <string name="format_dialog_url_or_path_hint">URL / Yol</string>
-    <string name="format_link_dialog_title">Bağlantı Ekle</string>
-    <string name="format_image_dialog_title">Görüntü Ekle</string>
+    <string name="name">Adı</string>
+    <string name="url_or_path">URL / Yol</string>
+    <string name="insert_link">Bağlantı Ekle</string>
+    <string name="insert_image">Görüntü Ekle</string>
 
     <!-- About screen -->
     <string name="contributors">Katkıda Bulunanlar</string>
-
-    <string name="pref_title__save_directory">Depolama klasörü seç</string>
+    <string name="select_storage_folder">Depolama klasörünü seç</string>
+    <string name="notebook_directory">Not defteri dizini</string>
     <string name="licenses">Lisanslar</string>
     <string name="changelog">Değişiklik Günlüğü</string>
     <string name="more_information">Daha fazla bilgi</string>
@@ -85,5 +81,138 @@
     <string name="sort_by_name">Ada göre sırala</string>
     <string name="sort_by_size">Boyuta göre sırala</string>
     <string name="sort_reverse">Sıralamayı ters çevir</string>
+    <string name="contribute">Katkıda Bulun</string>
+    <string name="donate">Bağış Yap</string>
+    <string name="project_page">Proje sayfası</string>
+    <string name="press_again_to_exit">Çıkmak için geriye tekrar basın</string>
+    <string name="exit">Çık</string>
+    <string name="undo">Geri Al</string>
+    <string name="redo">İleri Al</string>
+    <string name="more">Daha Fazla</string>
+    <string name="notebook">Not Defteri</string>
+    <string name="help">Yardım</string>
+    <string name="todo_list">Yapılacaklar Listesi</string>
+    <string name="task">Görev</string>
+    <string name="category">Kategori</string>
+    <string name="context">Bağlam</string>
+    <string name="list">Liste</string>
+    <string name="priority">Öncelik</string>
+    <string name="history">Geçmiş</string>
+    <string name="sync">Eşitle</string>
+    <string name="browse_somethingsingular_or_add">%s ekleyin veya mevcut belgelere göz at</string>
+    <string name="search_hint__add_or_custom">Ara / Özel</string>
+    <string name="save">Kaydet</string>
+    <string name="update">Güncelle</string>
+    <string name="clear">Temizle</string>
+    <string name="due_date">Bitiş tarihi</string>
+    <string name="current_date">Geçerli tarih</string>
+    <string name="archive">Arşiv</string>
+    <string name="add_task">Görev ekle</string>
+    <string name="add_something">%s Ekle</string>
+    <string name="pref_summary__loaded_and_saved_as__plus_name">\"%s\" olarak yüklenip kaydedilecek belgeyi seç</string>
+    <string name="pref_title__show_settings_option_in_main_toolbar">Araç çubuğundaki ayarlar</string>
+    <string name="pref_show_settings_option_in_main_toolbar">Ana ekrandaki araç çubuğunda ayarlar seçeneğini göster</string>
+    <string name="refresh">Yenile</string>
+    <string name="add_shortcut_to_launcher_homescreen">Kısayol oluştur</string>
+    <string name="add_shortcut_to_launcher_homescreen_notice">Bu belgeyi düzenlemek için ana ekranınıza bir kısayol eklemeye çalışır. Bazı başlatıcıların bunu desteklemeyebileceğini unutmayın.</string>
+    <string name="file_not_in_save_path_do_import">Seçilen dosya, uygulamanın not defteri dizininde yer almıyor. Bunu geçerli klasöre kopyalamak istiyor musunuz? Bu, mevcut dosyaların üzerine yazacaktır.</string>
+    <string name="files_and_folders">Dosyalar ve klasörler</string>
+    <string name="document_browser">Belge görüntüleyici</string>
 
+    <!-- Not in use currently -->
+    <string name="create_note" needed="false">Not Oluştur</string>
+    <string name="special_documents" needed="false">Özel belgeler</string>
+    <string name="navigate_up_folder" needed="false">Önceki klasöre dön</string>
+    <string name="app_settings" needed="false">Uygulama Ayarları</string>
+    <string name="editor_settings" needed="false">Düzenleyici Ayarları</string>
+    <string name="remember_last_folder_location_on_startup" needed="false">Başlangıçta son klasör konumunu hatırla</string>
+    <string name="show_markdown_shortcuts_bar" needed="false">Kısayol çubuğunu göster</string>
+    <string name="markdown_syntax_highlighting" needed="false">Sözdizimini vurgula</string>
+    <string name="pref_title__highlighting_delay" needed="false">Vurgulamaların yenilenmesi için milisaniye cinsinden gecikme süresi</string>
+    <string name="pref_title__highlighting_delay_summary" needed="false">Daha yüksek değerler pil tüketimini azaltır</string>
+    <string name="pref_title__smart_shortcuts" needed="false">Akıllı parantez kısayolları</string>
+    <string name="pref_title__smart_shortcuts_summary" needed="false">Metin seçilirse, {}, [] ve () seçimi çevreleyecektir</string>
+    <string name="number_of_files" needed="false">Dosya sayısı: %d</string>
+
+    <!-- New strings -->
+    <string name="global">Genel</string>
+    <string name="main_view">Ana Görünüm</string>
+    <string name="theme_description">Uygulamada kullanılan genel tema</string>
+    <string name="load_last_directory_at_startup">Son dizini hatırla</string>
+    <string name="syntax_highlighting">Sözdizimini vurgula</string>
+    <string name="text_modules">Metin modülü</string>
+    <string name="text_module">Metin modülü</string>
+    <string name="highlighting_delay">Vurgulama gecikmesi</string>
+    <string name="highlighting_delay_summary">Vurgulamayı yenilemek için milisaniye cinsinden gecikme değeri. Daha düşük bir değer, daha erken vurgulamaya başlar, ancak daha fazla pil tüketip performansı düşürür.</string>
+    <string name="highlighting_enabled_summary">Girilen metnin vurgulanması gerekip gerekmediğini kontrol et</string>
+    <string name="editor_font_size_summary">Düzenleyicide kullanılan yazı tipi boyutunu kontrol et</string>
+    <string name="textmodules_bar_summary">Sık kullanılan metin modüllerini eklemek için yararlı eylemler içeren bir çubuk göster</string>
+    <string name="load_last_directory_at_startup__summary">Başlangıçta son açılan klasörü yükle</string>
+    <string name="format">Biçim</string>
+    <string name="contexts">Bağlamlar</string>
+    <string name="project">Proje</string>
+    <string name="projects">Projeler</string>
+    <string name="categories">Kategoriler</string>
+    <string name="none">Yok</string>
+    <string name="pref_summary__is_highlighting_for_hexcolor_activated">Hex Renk Kodlarının renklerine göre altını çiz</string>
+    <string name="hexcolor_underline">Hex Renk Kodlarının Altını Çiz</string>
+    <string name="start_new_tasks_with_todays_date">Yeni görev başlatırken geçerli tarihi ekle</string>
+    <string name="tasks_with_todays_date">Bugünün tarihi ile görevler</string>
+    <string name="append_contexts_and_projects">Bağlamları ve projeleri ekle</string>
+    <string name="append_contexts_and_projects_on_end_of_task">Uygun metin modülü eylemini kullanırken, bir görevin sonuna bağlamları ve projeleri ekle</string>
+    <string name="right_to_left_rendering__abbreviated">Sağdan sola metin yönü</string>
+    <string name="highlight_line_ending">Satır sonunu vurgula</string>
+    <string name="highlight_line_ending_if_two_or_more_spaces">İki veya daha fazla boşluk içeren satırların sonundaki boşlukları vurgula</string>
+    <string name="use_monospace_for_code">Kod için Monospace kullan</string>
+    <string name="use_different_fonttype_slow_down">Farklı bir yazı tipi türünü kullan. Yazı tipi türünü dinamik olarak değiştirmek, uygulamanın performansını etkiler.</string>
+    <string name="general">Genel</string>
+    <string name="resources">Kaynaklar</string>
+    <string name="line_spacing_in_percent">Satırlar arasındaki boşlukların yüzdesi</string>
+    <string name="line_spacing">Satır aralığı</string>
+    <string name="archive_does_move_done_tasks">Bitirilen görevleri aynı klasöre belirtilen dosyaya taşı</string>
+    <string name="special_key">Özel Tuş</string>
+    <string name="key_page_up">Sayfa Yukarı (Page Up)</string>
+    <string name="key_page_down">Sayfa Aşağı (Page Down)</string>
+    <string name="key_pos_1">Satır Başlangıcı (Pos Home)</string>
+    <string name="key_pos_end">Satır Sonu (Pos End)</string>
+    <string name="key_pos_1_document">Belge Başlangıcı</string>
+    <string name="key_pos_end_document">Belge Sonu</string>
+    <string name="key_ctrl_a">Tümünü seç (Ctrl + A)</string>
+    <string name="key_tab">Tab</string>
+    <string name="start_on_bottom">Alttan başla</string>
+    <string name="start_on_bottom_summary">Bir belge yüklendikten sonra, İmleci belge sonuna yerleştir.</string>
+    <string name="filemanager_doesnot_supply_required_data">Markor sadece yerel, çevrimdışı kullanılabilir belgeleri düzenlemeye izin verir ve dosya adı dahil olmak üzere tam dosya yolunu sağlayan dosya yöneticilerini destekler. Görünüşe göre uygulama gerekli tüm bilgileri sağlayamadı ve bu yüzden Markor ile kullanılamaz :(.</string>
+    <string name="sync_to_local_folder_notice">Uyarı: Bir eşitleme uygulaması kullanırsanız, dosyalar bilinen veya özel klasörlerde bulunabilir, Markor\'un belge klasörünü değiştirerek dosyaları açabilir veya dosyayı farklı bir dosya yöneticisi ile açabilirsiniz.</string>
+    <string name="configure_in_the_apps_settings">Uygulama ayarlarından yapılandır</string>
+    <string name="vertical_alignment">Dikey hizalama</string>
+    <string name="horizontal_alignment">Yatay hizalama</string>
+    <string name="align_default">Varsayılan</string>
+    <string name="align_left">Sol</string>
+    <string name="align_right">Sağ</string>
+    <string name="align_top">Üst</string>
+    <string name="align_bottom">Alt</string>
+    <string name="align_center">Merkez</string>
+
+    <string name="center_text">Metni ortala</string>
+    <string name="center_text_desc">Metni ekranın ortasında düzenleyin</string>
+    <string name="clipboard">Pano</string>
+    <string name="existing_document">Mevcut belegeyi seç</string>
+    <string name="open_source_licenses">Açık Kaynak Lisansları</string>
+    <string name="rate_the_app">Bu uygulamayı değerlendir</string>
+    <string name="translate">Çeviri yap</string>
+    <string name="help_this_app">Bu uygulama hakkında daha fazla bilgi alın ve yardım edin</string>
+    <string name="bug_reports">Hataları bildir</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Bu projeye bağış yapma veya destekleme hakkında daha fazla bilgi alın</string>
+    <string name="android_contribution_guide">Android katkıda bulunma rehberi</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Özellikle Android Uygulamaları olmak üzere Açık Kaynaklı projelere katkıda bulunma hakkında daha fazla bilgi alın</string>
+    <string name="join_community">Topluluğa katıl</string>
+    <string name="bug_reports_suggest_improvements">Geri bildirim verin, hataları bildirin veya iyileştirmeler önerin</string>
+    <string name="help_translating_this_app">Bu uygulamayı diğer dillere çevirin</string>
+    <string name="source_code">Kaynak Kodu</string>
+    <string name="project_license">Proje Lisansı</string>
+    <string name="project_contribution_info">Proje katkıda bulunma rehberi</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Bu projeye nasıl katkıda bulunacağına dair daha fazla bilgi alın</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Projeye kod yazarak katkıda bulunun. Yeni gelenler de dahil olmak üzere herkes kabul edilir</string>
+    <string name="project_team">Proje Ekibi</string>
+    <string name="contributors_public_info">Katkıda bulunanlarla ilgili bilgileri gösterin. Katkıda bulunanlar, katkıdan bulunduktan sonra burada gösterilmeleri için bilgilerini sağlayabilir</string>
 </resources>

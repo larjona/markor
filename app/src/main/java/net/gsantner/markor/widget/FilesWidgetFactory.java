@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014 Jeff Martin
  * Copyright (c) 2015 Pedro Lafuente
- * Copyright (c) 2017 Gregor Santner and Markor contributors
+ * Copyright (c) 2017-2018 Gregor Santner
  *
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
@@ -14,9 +14,9 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import net.gsantner.markor.R;
-import net.gsantner.markor.model.Constants;
-import net.gsantner.markor.model.DocumentLoader;
+import net.gsantner.markor.format.converter.MarkdownTextConverter;
 import net.gsantner.markor.util.ContextUtils;
+import net.gsantner.markor.util.DocumentIO;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ public class FilesWidgetFactory implements RemoteViewsService.RemoteViewsFactory
     public FilesWidgetFactory(Context context, Intent intent) {
         _context = context;
         _appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        _dir = (File) intent.getSerializableExtra(DocumentLoader.EXTRA_PATH);
+        _dir = (File) intent.getSerializableExtra(DocumentIO.EXTRA_PATH);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class FilesWidgetFactory implements RemoteViewsService.RemoteViewsFactory
     }
 
     private void updateFiles() {
-        this._widgetFilesList = _dir.listFiles(file ->
+        _widgetFilesList = _dir == null ? new File[0] : _dir.listFiles(file ->
                 !file.isDirectory() && ContextUtils.get().isMaybeMarkdownFile(file)
         );
     }
@@ -56,16 +56,19 @@ public class FilesWidgetFactory implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public int getCount() {
-        return _widgetFilesList.length;
+        return _widgetFilesList == null ? 0 : _widgetFilesList.length;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        File file = _widgetFilesList[position];
-        Intent fillInIntent = new Intent().putExtra(DocumentLoader.EXTRA_PATH, file);
         RemoteViews rowView = new RemoteViews(_context.getPackageName(), R.layout.widget_file_item);
-        rowView.setTextViewText(R.id.widget_note_title, Constants.MD_EXTENSION.matcher(file.getName()).replaceAll(""));
-        rowView.setOnClickFillInIntent(R.id.widget_note_title, fillInIntent);
+        rowView.setTextViewText(R.id.widget_note_title, "???");
+        if (position < _widgetFilesList.length) {
+            File file = _widgetFilesList[position];
+            Intent fillInIntent = new Intent().putExtra(DocumentIO.EXTRA_PATH, file);
+            rowView.setTextViewText(R.id.widget_note_title, MarkdownTextConverter.MD_EXTENSION_PATTERN.matcher(file.getName()).replaceAll(""));
+            rowView.setOnClickFillInIntent(R.id.widget_note_title, fillInIntent);
+        }
         return rowView;
     }
 
